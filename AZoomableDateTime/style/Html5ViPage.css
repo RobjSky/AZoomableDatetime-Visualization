@@ -1,0 +1,11 @@
+/*
+style definitions for icon on gallery view
+*/
+.mstrmojo-VIGallery .mstrmojo-VIGalleryList .item.ic-AZoomableDateTime > div > div {
+   background: url(images/amchart.png);
+   background-position: 0 0;
+}
+.mojo-theme-dark .mstrmojo-VIGallery .mstrmojo-VIGalleryList .item.ic-AZoomableDateTime > div > div {
+   background: url(images/amchart.png) no-repeat scroll;
+   background-position: 0 0;
+}
