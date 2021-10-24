@@ -174,7 +174,7 @@
                                         labelText: "Show Axis Tooltip"
                                     }, {
                                         style: $WT.CHECKBOXANDLABEL,
-                                        disabled: this.getHost().getProperty('displayXYCursor') === "false",
+                                        disabled: this.getHost().getProperty('displayXYCursor') === "false" || this.getHost().getProperty('hideXYCursorLines') === "true",
                                         propertyName: "fullWidthCursor",
                                         labelText: "Full Width Cursor"
                                     }, {
@@ -753,7 +753,11 @@
                                 }, {
                                     style: $WT.CHECKBOXANDLABEL,
                                     propertyName: "showDebugMsgs",
-                                    labelText: "Show Msg"
+                                    labelText: "Show Debug Msg"
+                                }, {
+                                    style: $WT.CHECKBOXANDLABEL,
+                                    propertyName: "showDebugTbl",
+                                    labelText: "Show Debug Table"
                                 }, {
                                     style: $WT.LABEL,
                                     labelText: "Things to look out for: Date(dd.MM.yyyy) and DateTime(dd.MM.yyyy HH:mm) // The Time Attribute for DateTime needs to be sorted ASC."

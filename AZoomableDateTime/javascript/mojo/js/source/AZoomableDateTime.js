@@ -371,6 +371,7 @@
                         series.name = name;
                         series.dataFields.valueY = field;
                         series.dataFields.categoryX = "date";
+                        //FIXME
                         series.tooltipText = "{name}: " + valueYformat;
 
                         //show values inside chart
@@ -573,7 +574,8 @@
                         allSeries.push(s);
                     })
                 // Break-By
-                //if (typeof datapool.transMetricNames != "undefined") {
+                //FIXME
+                //if (typeof datapool.transMetricNames != "undefined")
                 } else if (datapool.attrs.length > 1 && datapool.cols.length == 1) {
                     (me.getProperty("showDebugMsgs") == 'true') ? window.alert('109: break-by found'): 0;
                     datapool.transMetricNames.forEach((col, i) => {
@@ -649,7 +651,7 @@
                     if (me.getProperty("singleTooltip") === 'true') {
                         chart2.cursor.maxTooltipDistance = 0;
                     };
-                }
+                };
 
                 // Create a horizontal scrollbar with preview and place it underneath the date axis
                 if (me.getProperty("displayXYChartScrollbar") === 'true') {
@@ -1112,6 +1114,8 @@
                     var Say2 = "datapool.rows:";
                     //var myWindow2 = PopUp(Say1, Say2, datapool.rows);
                     var myWindow2 = (me.getProperty("showDebugMsgs") == 'true') ? PopUp(Say1, Say2, datapool.rows) : 0;
+                    var myWindow3 = (me.getProperty("showDebugTbl") == 'true') ? PopUp(Say1, Say2, datapool.rows) : 0;
+                    
 
                     return datapool;
                  };
