@@ -41,10 +41,9 @@
 
             /** Todos:
              *  Scrollwheel sensitivity
-             * in Category-Mode: spacing Xaxis
-             * in Category-Mode: stacked versus non-stacked
-             * switch to display primary YAxis-Name
-             * Configuring the zoom out button(Configuring the zoom out button)
+             *  in Category-Mode: spacing Xaxis
+             *  in Category-Mode: stacked versus non-stacked
+             *  switch to display primary YAxis-Name
              */
 
             plot: function () {
@@ -95,7 +94,8 @@
                     showItemLabels: false,
                     positionLabel: 'center',
                     positionVLabel: 'middle',
-                    valuesLegend: 'false'
+                    valuesLegend: 'false',
+                    dateTimeFormat: 'dd-mm-yyyy'
                 });
                 ;
                 (me.getProperty("showDebugMsgs") == 'true') ? window.alert('Version 1.059') : 0;
@@ -403,7 +403,7 @@
                         series.groupFields.valueY = me.getProperty("aggregateValues");
                         series.minBulletDistance = 15;
                         series.tooltipText = seriesToolTipFormat;
-                        //FIXME
+                        //FIXME -- all variations -> with Non-Datetime
                         //insert metric form in Tooltip
                         var tipParts = seriesToolTipFormat.split('{valueY}');
                         seriesToolTipFormatted = tipParts[0] + valueYformat + tipParts[1]
@@ -622,14 +622,13 @@
                     if (me.getProperty("positionLegend") === "top" || me.getProperty("positionLegend") === "bottom") {
                         chart2.legend.width = am4core.percent(80);
                     }
-                    
                 };
                 if (me.getProperty("displayXYCursor") === 'true') {
                     chart2.cursor = new am4charts.XYCursor();
                     chart2.cursor.lineY.disabled = (me.getProperty("hideXYCursorLines") === 'true');
                     chart2.cursor.lineX.disabled = (me.getProperty("hideXYCursorLines") === 'true');
                     chart2.zoomOutButton.background.fill = am4core.color(me.getProperty("selectorBackground").fillColor);
-                    chart2.zoomOutButton.icon.stroke = am4core.color(me.getProperty("fontColor").fillColor);
+                    chart2.zoomOutButton.icon.stroke = am4core.color(me.getProperty("selectorColor").fillColor);
                     chart2.zoomOutButton.icon.strokeWidth = 2;
                     chart2.zoomOutButton.background.states.getKey("hover").properties.fill = am4core.color("#5A5F73");
 
@@ -843,12 +842,13 @@
                     // if date then (Input dd.mm.yy)
                     let attrlength = dp.getRowHeaders(0).getHeader(0).getName().length;
                     let digitscount;
-                    // count only digits (\d)
+                    // count only digits (\d) from 0-9.
                     try {
                         digitscount = String(dp.getRowHeaders(0).getHeader(0).getName()).match(/\d/g).length;
                         //window.alert("Number of digits found: " + digitscount);
                     } catch (err) {
-                        digitscount = 0;
+                        // no digits found -> no date(time) -> AttrCount must result in > 5
+                        digitscount = -6;
                         //window.alert('Number of digits found: ' + digitscount + ' Error: ' + err.message);
                     };
 
@@ -888,6 +888,85 @@
                         // Attribute.Values: get date from data. date needs to be in the form of dd.mm.yyyy
                         c.date = dp.getRowHeaders(i).getHeader(0).getName();
 
+
+
+
+
+
+                        /// NEW Approach
+                        c.date = createDateTime(c.date);
+
+                        function createDateTime(conv2Date) {
+                            //if (startAttrIsDate === "datetime") {
+                            //(i < 1) ? window.alert('conv2date b4: ' + conv2Date + '\nformat b4: ' + me.getProperty("dateTimeFormat")): 0;
+
+                            if (AttrIsDate === "false") {
+                                //(i < 1) ? window.alert('exit function'): 0;
+                                return conv2Date;
+                                //return;
+                            }
+
+
+                            var fragOfTime = conv2Date.split(/[\s,-/\\:]+/), // split by multiple chars ( \s = [whitespace] | ,-/ = [, - . /]Range charcode 44 to charcode 47 | \\ = [\] | : = [:] | []+ = 1 or more)
+                                yyyy, mm, dd;
+                            if (fragOfTime[2].length == 2) {
+                                fragOfTime[2] = '20' + fragOfTime[2];
+                            }
+                            
+                            //(i < 1) ? window.alert('AttrIsDate: ' + AttrIsDate + '\nfragOfTime length: ' + fragOfTime.length): 0;
+
+                            switch (me.getProperty("dateTimeFormat")) {
+                                case "dd-mm-yyyy":
+                                    yyyy = fragOfTime[2];
+                                    mm = fragOfTime[1];
+                                    dd = fragOfTime[0];
+                                    break;
+                                case "mm-dd-yyyy":
+                                    yyyy = fragOfTime[2];
+                                    mm = fragOfTime[0];
+                                    dd = fragOfTime[1];
+                                    break;
+                                case "yyyy-dd-mm":
+                                    yyyy = fragOfTime[0];
+                                    mm = fragOfTime[2];
+                                    dd = fragOfTime[1];
+                                    break;
+                                case "yyyy-mm-dd":
+                                    yyyy = fragOfTime[0];
+                                    mm = fragOfTime[1];
+                                    dd = fragOfTime[2];
+                                    break;
+                            };
+
+                            //(i < 1) ? window.alert('y: ' + yyyy + ' _m: ' + mm + ' _d: ' + dd + '\nh: ' + fragOfTime[3] + ' : min: ' + fragOfTime[4]): 0;
+
+                            //check if date (d,m,y) or datetime(d,m,y,h,m,s)
+                            if (fragOfTime.length === 3) {
+                                // Note: JavaScript counts months from 0 to 11. January is 0.
+                                // convert to Datetime-Format yyyy-mm-ddTHH:mm:ss.000Z
+                                conv2Date = new Date(yyyy, mm - 1, dd);
+                                //seriesToolTipFormat = "{openDateX.formatDate('dd.MM.yyyy')} - {dateX.formatDate('dd.MM.yyyy ')}";
+                                seriesToolTipFormat = "{dateX.formatDate('dd.MM.yyyy')}:\n {name}:\n [bold]{valueY}[/]"
+                            } else if (fragOfTime.length === 6) {
+                                conv2Date = new Date(yyyy, mm - 1, dd, fragOfTime[3], fragOfTime[4], fragOfTime[5]);
+                                //seriesToolTipFormat = "{openDateX.formatDate('dd.MM.yyyy HH:mm')} - {dateX.formatDate('HH:mm')}";
+                                seriesToolTipFormat = "{dateX.formatDate('dd.MM.yyyy HH:mm')}:\n {name}:\n [bold]{valueY}[/]"
+                            }
+                            return conv2Date;
+                        }
+
+                        /// NEW Approach
+
+
+
+
+
+
+
+
+
+
+/*
                         switch (AttrIsDate) {
                             case "date":
                                 if (i < 1) {
@@ -923,7 +1002,7 @@
                                 c.date = new Date(dparts[2], dparts[1] - 1, dparts[0], tparts[0], tparts[1], tparts[2]);
                                 seriesToolTipFormat = "{dateX.formatDate('dd.MM.yyyy HH:mm')}:\n {name}:\n [bold]{valueY}[/]"
                                 if (i < 1 && me.getProperty("showDebugMsgs") == 'true') {
-                                    //window.alert('dparts2(Y): ' + dparts[2] + ' //*// dparts0(M): ' + dparts[0] + ' //*// dparts1-1(D): ' + (dparts[1] - 1) + ' //*// dparts1: ' + dparts[1] + ' //*// tparts0: ' + tparts[0] + ' //*// tparts1: ' + tparts[1] + ' //*// tparts2: ' + tparts[2]);
+                                    //window.alert('dparts2(Y): ' + dparts[2] + ' //+// dparts0(M): ' + dparts[0] + ' //+// dparts1-1(D): ' + (dparts[1] - 1) + ' //+// dparts1: ' + dparts[1] + ' //+// tparts0: ' + tparts[0] + ' //+// tparts1: ' + tparts[1] + ' //+// tparts2: ' + tparts[2]);
                                     var newLine = "\r\n"
                                     var msg = 'c.datetime after: ' + c.date
                                     msg += newLine;
@@ -942,6 +1021,7 @@
                                 (me.getProperty("showDebugMsgs") == 'true') ? window.alert('default: Doesn´t look like a date to me: ' + c.date): 0;
                                 break;
                         };
+*/
 
                         c.attributes = [];
                         // Attribute.Values: get the attribute values. Z=AttrCount so the first iteration is skipped IF the first attribute is a date and therefore it should be in c.date

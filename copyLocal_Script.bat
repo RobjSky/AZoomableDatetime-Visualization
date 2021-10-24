@@ -1,9 +1,9 @@
-set "source=u:\MyDocuments\00_MyStuff\MSTR Visualizations\Development\AZoomableDateTime (custom amchart)\AZoomableDateTime"
+set "source=%~dp0\AZoomableDateTime"
 
 set "destination=c:\Program Files\MicroStrategy\Workstation\Code\plugins\AZoomableDateTime"
 
 robocopy /mir "%source%" "%destination%"
 
-start "C:\Program Files\MicroStrategy\Workstation\Workstation.exe" "u:\MyDocuments\00_MyStuff\MSTR Visualizations\Development\AZoomableDateTime (custom amchart)\CustomamChart.mstr"
+start "C:\Program Files\MicroStrategy\Workstation\Workstation.exe" "%~dp0CustomamChart.mstr"
 
 exit /b

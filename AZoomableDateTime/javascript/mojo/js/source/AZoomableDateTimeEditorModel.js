@@ -52,8 +52,7 @@
                                                 style: $WT.LABEL,
                                                 width: "30%",
                                                 labelText: "Position"
-                                            },
-                                            {
+                                            },{
                                                 style: $WT.PULLDOWN,
                                                 width: "70%",
                                                 disabled: this.getHost().getProperty('showLegend') === "false",
@@ -82,8 +81,7 @@
                                                 propertyName: "padLegend",
                                                 labelText: "Legend Padding",
                                                 width: "70%"
-                                            },
-                                            {
+                                            }, {
                                                 style: $WT.STEPPER,
                                                 disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('padLegend') === "false",
                                                 propertyName: "padLegendAmount",
@@ -100,8 +98,7 @@
                                                 propertyName: "maxHeightLegend",
                                                 labelText: "Legend max Height",
                                                 width: "70%"
-                                            },
-                                            {
+                                            }, {
                                                 style: $WT.STEPPER,
                                                 disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('maxHeightLegend') === "false",
                                                 propertyName: "maxHeightLegendAmount",
@@ -136,8 +133,7 @@
                                                 propertyName: "sizeMarkerLegend",
                                                 labelText: "Marker Size",
                                                 width: "70%"
-                                            },
-                                            {
+                                            }, {
                                                 style: $WT.STEPPER,
                                                 disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('sizeMarkerLegend') === "false",
                                                 propertyName: "sizeMarkerLegendAmount",
@@ -274,6 +270,30 @@
                                             }, {
                                                 name: "pan",
                                                 value: "panX"
+                                            }]
+                                        }]
+                                    }, {
+                                        style: $WT.TWOCOLUMN,
+                                        items: [{
+                                            style: $WT.LABEL,
+                                            width: "40%",
+                                            labelText: "DateTime Format (Separator doesnt matter)"
+                                        }, {
+                                            style: $WT.PULLDOWN,
+                                            width: "60%",
+                                            propertyName: "dateTimeFormat",
+                                            items: [{
+                                                name: "dd-mm-yyyy",
+                                                value: "dd-mm-yyyy"
+                                            }, {
+                                                name: "mm-dd-yyyy",
+                                                value: "mm-dd-yyyy"
+                                            }, {
+                                                name: "yyyy-dd-mm",
+                                                value: "yyyy-dd-mm"
+                                            }, {
+                                                name: "yyyy-mm-dd",
+                                                value: "yyyy-mm-dd"
                                             }]
                                         }]
                                     }
@@ -721,28 +741,27 @@
                         ]
                     },
                     // NOTE Tab amCharts Help and Notes
+                    {
+                        name: 'Help and Notes',
+                        value: [
                         {
-                            name: 'Help and Notes',
-                            value: [
-                            {
-                                style: $WT.EDITORGROUP,
-                                items: [
-                                    {
-                                        style: $WT.LABEL,
-                                        labelText: "Version 1.059 (GitHub:RobjSky)"
-                                    }, {
-                                        style: $WT.CHECKBOXANDLABEL,
-                                        propertyName: "showDebugMsgs",
-                                        labelText: "Show Msg"
-                                    }, {
-                                        style: $WT.LABEL,
-                                        labelText: "Things to look out for: Date(dd.MM.yyyy) and DateTime(dd.MM.yyyy HH:mm) // The Time Attribute for DateTime needs to be sorted ASC."
-                                        +"/n AMCharts(Aug2021):"
-                                        +"\n Horizontal scrolling of legends is not(yet) supported."
-                                    },
-                                ]
-                            },
-                        ]
+                            style: $WT.EDITORGROUP,
+                            items: [
+                                {
+                                    style: $WT.LABEL,
+                                    labelText: "Version 1.059 (GitHub:RobjSky)"
+                                }, {
+                                    style: $WT.CHECKBOXANDLABEL,
+                                    propertyName: "showDebugMsgs",
+                                    labelText: "Show Msg"
+                                }, {
+                                    style: $WT.LABEL,
+                                    labelText: "Things to look out for: Date(dd.MM.yyyy) and DateTime(dd.MM.yyyy HH:mm) // The Time Attribute for DateTime needs to be sorted ASC."
+                                    +"/n AMCharts(Aug2021):"
+                                    +"\n Horizontal scrolling of legends is not(yet) supported."
+                                },
+                            ]
+                        },]
                     }
                 ];
             }
