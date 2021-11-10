@@ -38,7 +38,7 @@
                                 style: $WT.EDITORGROUP,
                                 items: [{
                                         style: $WT.LABEL,
-                                        labelText: "amCharts Timeline Options"
+                                        labelText: "Legend:"
                                     },
                                     // Legend
                                     {
@@ -79,14 +79,14 @@
                                                 style: $WT.CHECKBOXANDLABEL,
                                                 disabled: this.getHost().getProperty('showLegend') === "false",
                                                 propertyName: "padLegend",
-                                                labelText: "Legend Padding",
+                                                labelText: "Item Padding",
                                                 width: "70%"
                                             }, {
                                                 style: $WT.STEPPER,
                                                 disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('padLegend') === "false",
                                                 propertyName: "padLegendAmount",
                                                 min: 0,
-                                                max: 10,
+                                                max: 1000,
                                                 width: "30%"
                                             }
                                         ]
@@ -94,35 +94,35 @@
                                         style: $WT.TWOCOLUMN,
                                         items: [{
                                                 style: $WT.CHECKBOXANDLABEL,
-                                                disabled: this.getHost().getProperty('showLegend') === "false",
+                                                disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('positionLegend') === "top" || this.getHost().getProperty('positionLegend') === "bottom",
                                                 propertyName: "maxHeightLegend",
                                                 labelText: "Legend max Height",
-                                                width: "70%"
+                                                width: "75%"
                                             }, {
                                                 style: $WT.STEPPER,
-                                                disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('maxHeightLegend') === "false",
+                                                disabled: this.getHost().getProperty('maxHeightLegend') === "false",
                                                 propertyName: "maxHeightLegendAmount",
                                                 min: 0,
                                                 max: 1000,
-                                                width: "30%"
+                                                width: "25%"
                                             }
                                         ]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         items: [{
                                                 style: $WT.CHECKBOXANDLABEL,
-                                                disabled: this.getHost().getProperty('showLegend') === "false",
+                                                disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('positionLegend') === "top" || this.getHost().getProperty('positionLegend') === "bottom",
                                                 propertyName: "maxWidthLegend",
                                                 labelText: "Legend max Width",
-                                                width: "70%"
+                                                width: "75%"
                                             },
                                             {
                                                 style: $WT.STEPPER,
-                                                disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('maxWidthLegend') === "false",
+                                                disabled: this.getHost().getProperty('maxWidthLegend') === "false",
                                                 propertyName: "maxWidthLegendAmount",
                                                 min: 0,
                                                 max: 1000,
-                                                width: "30%"
+                                                width: "25%"
                                             }
                                         ]
                                     }, {
@@ -148,7 +148,13 @@
                                          propertyName: "valuesLegend",
                                          labelText: "Values in Legend",
                                          width: "70%"
-                                     }
+                                     },
+                                     /* TODO format legend
+                                     {
+                                         style: $WT.CHARACTERGROUP,
+                                         disabled: this.getHost().getProperty('showLegend') === "false" || this.getHost().getProperty('valuesLegend') === "false",
+                                         propertyName: "labelFontLegend"
+                                     }*/
                                 ]
                             },
                             // Options Group
@@ -172,6 +178,18 @@
                                         disabled: this.getHost().getProperty('displayXYCursor') === "false",
                                         propertyName: "displayXYCursorTips",
                                         labelText: "Show Axis Tooltip"
+                                    }, {
+                                        style: $WT.TWOCOLUMN,
+                                        items: [{   style: $WT.LABEL,
+                                                    disabled: this.getHost().getProperty('displayXYCursor') === "false",
+                                                    width: "30%",
+                                                    labelText: "format:"
+                                                }, {
+                                                    style: $WT.TEXTBOX,
+                                                    disabled: this.getHost().getProperty('displayXYCursor') === "false",
+                                                    width: "70%",
+                                                    propertyName: "AxisTooltipFormat"
+                                                }]
                                     }, {
                                         style: $WT.CHECKBOXANDLABEL,
                                         disabled: this.getHost().getProperty('displayXYCursor') === "false" || this.getHost().getProperty('hideXYCursorLines') === "true",
@@ -749,7 +767,7 @@
                             items: [
                                 {
                                     style: $WT.LABEL,
-                                    labelText: "Version 1.059 (GitHub:RobjSky)"
+                                    labelText: "Version 1.45 (GitHub:RobjSky)"
                                 }, {
                                     style: $WT.CHECKBOXANDLABEL,
                                     propertyName: "showDebugMsgs",

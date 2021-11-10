@@ -16,7 +16,6 @@
     mstrmojo.requiresCls("mstrmojo.CustomVisBase");
     var colors = []; //to maintain the color object for each metric
     var metricColors = [];
-
     /**
      * A visualization that integrates Microstrategy data with amcharts code
      * @extends mstrmojo.CustomVisBase
@@ -39,12 +38,6 @@
             // Define whether the DOM should be reused on data/layout change or reconstructed from scratch
             reuseDOMNode: false,
 
-            /** Todos:
-             *  Scrollwheel sensitivity
-             *  in Category-Mode: spacing Xaxis
-             *  in Category-Mode: stacked versus non-stacked
-             *  switch to display primary YAxis-Name
-             */
 
             plot: function () {
                 var me = this;
@@ -60,8 +53,9 @@
                 
 
                 this.setDefaultPropertyValues({
-                    showLegend: 'true',
-                    positionLegend: 'top',
+                    showLegend: 'true', //show legend
+                    positionLegend: 'top', //position
+                    colorLegendMetric: 'false',
                     displayXYCursor: 'true',
                     hideXYCursorLines: 'false',
                     displayXYCursorTips: true,
@@ -73,6 +67,7 @@
                     startAtZero: 'false',
                     enableStacked: 'false',
                     VizAsSelect: 'false',
+                    padLegendAmount: 10,
                     
                     amountStrokeXColor: {fillColor: "#ebebeb", fillAlpha: "100"},
                     amountStrokeYColor: {fillColor: "#ebebeb", fillAlpha: "100"},
@@ -95,10 +90,20 @@
                     positionLabel: 'center',
                     positionVLabel: 'middle',
                     valuesLegend: 'false',
-                    dateTimeFormat: 'dd-mm-yyyy'
+                    dateTimeFormat: 'dd-mm-yyyy',
+                    // TODO format legend
+                    /*
+                        labelFontLegend: {
+                            fontFamily: 'Open Sans',
+                            fontWeight: false,
+                            fontItalic: false,
+                            fontSize: '14pt',
+                            fontColor: "red"
+                        },
+                    */
                 });
                 ;
-                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('Version 1.059') : 0;
+                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('Version 1.07') : 0;
 
                 am4core.useTheme(am4themes_animated);
 
@@ -146,7 +151,6 @@
                      chart2.data = datapool.rows;
                  }
 
-
                 // Create axes
                 // Create Axis for either date-based X-Axis or category-based X-Axis
                 //NOTE Create Axis --------------------------------//
@@ -188,8 +192,28 @@
                     dateAxis.renderer.line.stroke = am4core.color(me.getProperty("axisXColor").fillColor);
                     dateAxis.renderer.line.strokeOpacity = me.getProperty("axisXColor").fillAlpha * 0.01;
                     // Set date label formatting (https://www.amcharts.com/docs/v4/concepts/axes/date-axis/#Setting_date_formats)
+                    //                            https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/
+                    
+                    
+                    
+                    
+                    
+                    // TODO add mulitple choices for users
+                    // TODO add axis-tooltip with more info (eg dd.mm.yyyy hh:mm) --> cursorTooltipEnabled
+                    // https://www.amcharts.com/docs/v4/concepts/axes/axis-tooltips/#Tooltip_value_format
+                    dateAxis.tooltip.background.fill = am4core.color(me.getProperty("selectorColor").fillColor);
+                    dateAxis.tooltip.background.strokeWidth = 0;
+                    dateAxis.tooltip.label.fill = am4core.color(me.getProperty("selectorBackground").fillColor);
+                    dateAxis.tooltipDateFormat = me.getProperty("AxisTooltipFormat"); //"yyyy-MM-dd";
                     //dateAxis.dateFormats.setKey("day", "dd.MM.");
-                    //dateAxis.dateFormats.setKey("week", "'KW'ww");
+                    dateAxis.dateFormats.setKey("day", "d.M.");
+                    dateAxis.dateFormats.setKey("week", "'KW'ww");
+                
+                
+                    
+                
+                
+                
                     dateAxis.periodChangeDateFormats.setKey("hour", "[bold]dd.MMM[/]\nEEE");
                     dateAxis.periodChangeDateFormats.setKey("day", "[bold]dd.MMM[/]");
                     dateAxis.periodChangeDateFormats.setKey("week", "[bold]'KW'ww[/]");
@@ -219,7 +243,13 @@
 
                         dateAxis.fillRule = function (dataItem) {
                             var date = new Date(dataItem.value);
-                            if ((date.getDay() == 0 || date.getDay() == 6) && dateAxis.gridInterval.timeUnit == "day" && dateAxis.gridInterval.count == 1) {
+                            if ((date.getDay() == 0 || date.getDay() == 6) 
+                                && (
+                                    (dateAxis.gridInterval.timeUnit == "day" && dateAxis.gridInterval.count == 1) 
+                                    ||
+                                    (dateAxis.gridInterval.timeUnit == "hour")
+                                )
+                            ) {
                                 dataItem.axisFill.visible = true;
                                 /** Prep in case Highlight Thursdays and Fridays too but with half opacity
                                 } else if ((date.getDay() == 4 || date.getDay() == 5) && dateAxis.gridInterval.timeUnit == "day" && dateAxis.gridInterval.count == 1) {
@@ -245,53 +275,58 @@
                     };
 
                     //NOTE: Range selector
+                    //FIXME if attr is not date is not triggered.
                     if (me.getProperty("enableRangeSelector") === 'true') {
-                        var container = document.createElement('div');
-                        var rangeselect = document.createElement('div');
-                        //rangeselect.style.background = "#c0c0c0";
-                        rangeselect.style.background = am4core.color(me.getProperty("selectorBackground").fillColor);
-                        //rangeselect.style.color = "#000";
-                        rangeselect.style.color = am4core.color(me.getProperty("selectorColor").fillColor);
-                        rangeselect.style.position = "absolute";
-                        rangeselect.style.bottom = "0px";
-                        rangeselect.style.right = "0px";
-                        rangeselect.style.height = "23px";
-                        rangeselect.id = "rangeselect";
+                        if (AttrIsDate == 'false') {
+                            window.alert('not possible without Date(Time)-Attribute');
+                        } else {
+                            var container = document.createElement('div');
+                            var rangeselect = document.createElement('div');
+                            //rangeselect.style.background = "#c0c0c0";
+                            rangeselect.style.background = am4core.color(me.getProperty("selectorBackground").fillColor);
+                            //rangeselect.style.color = "#000";
+                            rangeselect.style.color = am4core.color(me.getProperty("selectorColor").fillColor);
+                            rangeselect.style.position = "absolute";
+                            rangeselect.style.bottom = "0px";
+                            rangeselect.style.right = "0px";
+                            rangeselect.style.height = "23px";
+                            rangeselect.id = "rangeselect";
 
-                        container.appendChild(rangeselect);
-                        this.domNode.appendChild(container);
+                            container.appendChild(rangeselect);
+                            this.domNode.appendChild(container);
 
-                        var selector = new am4plugins_rangeSelector.DateAxisRangeSelector();
-                        selector.container = document.getElementById("rangeselect");
-                        selector.axis = dateAxis;
-                        selector.inputDateFormat = "yyyy-MM-dd";
+                            var selector = new am4plugins_rangeSelector.DateAxisRangeSelector();
+                            selector.container = document.getElementById("rangeselect");
+                            selector.axis = dateAxis;
+                            selector.inputDateFormat = "yyyy-MM-dd";
 
-                        //build bottons for Range Selector based on range of dates (max-min=diff)
-                        //window.alert('diff2 = ' + diff + ' days');
-                        if (diff < 28) {
-                            selector.periods.length = 0; // empty Array
-                            selector.periods.unshift({ name: "MAX", interval: "max" });
-                            selector.periods.unshift({ name: "1W", interval: { timeUnit: "week", count: 1 }});
-                            selector.periods.unshift({ name: "3d", interval: { timeUnit: "day", count: 3 }});
-                            selector.periods.unshift({ name: "1d", interval: { timeUnit: "day", count: 1 }});
-                        } else if (diff < 210){
-                            selector.periods.length = 0; // empty Array
-                            selector.periods.unshift({ name: "MAX", interval: "max" });
-                            selector.periods.unshift({ name: "3M", interval: { timeUnit: "month", count: 3 }});
-                            selector.periods.unshift({ name: "1M", interval: { timeUnit: "month", count: 1 }});
-                            selector.periods.unshift({ name: "2W", interval: { timeUnit: "week", count: 2 }});
-                            selector.periods.unshift({ name: "1W", interval: { timeUnit: "week", count: 1 }});
-                        } else if (diff > 210) {
-                            selector.periods.length = 0; // empty Array
-                            selector.periods.unshift({ name: "MAX", interval: "max" });
-                            selector.periods.unshift({ name: "YTD", interval: "ytd" });
-                            selector.periods.unshift({ name: "1Y", interval: { timeUnit: "year", count: 1 }});
-                            selector.periods.unshift({ name: "6M", interval: { timeUnit: "month", count: 6 }});
-                            selector.periods.unshift({ name: "3M", interval: { timeUnit: "month", count: 3 }});
-                            selector.periods.unshift({ name: "1M", interval: { timeUnit: "month", count: 1 }});
-                            selector.periods.unshift({ name: "2W", interval: { timeUnit: "week", count: 2 }});
+                            //build bottons for Range Selector based on range of dates (max-min=diff)
+                            //window.alert('diff2 = ' + diff + ' days');
+                            if (diff < 28) {
+                                selector.periods.length = 0; // empty Array
+                                selector.periods.unshift({ name: "MAX", interval: "max" });
+                                selector.periods.unshift({ name: "1W", interval: { timeUnit: "week", count: 1 }});
+                                selector.periods.unshift({ name: "3d", interval: { timeUnit: "day", count: 3 }});
+                                selector.periods.unshift({ name: "1d", interval: { timeUnit: "day", count: 1 }});
+                            } else if (diff < 210){
+                                selector.periods.length = 0; // empty Array
+                                selector.periods.unshift({ name: "MAX", interval: "max" });
+                                selector.periods.unshift({ name: "3M", interval: { timeUnit: "month", count: 3 }});
+                                selector.periods.unshift({ name: "1M", interval: { timeUnit: "month", count: 1 }});
+                                selector.periods.unshift({ name: "2W", interval: { timeUnit: "week", count: 2 }});
+                                selector.periods.unshift({ name: "1W", interval: { timeUnit: "week", count: 1 }});
+                            } else if (diff > 210) {
+                                selector.periods.length = 0; // empty Array
+                                selector.periods.unshift({ name: "MAX", interval: "max" });
+                                selector.periods.unshift({ name: "YTD", interval: "ytd" });
+                                selector.periods.unshift({ name: "1Y", interval: { timeUnit: "year", count: 1 }});
+                                selector.periods.unshift({ name: "6M", interval: { timeUnit: "month", count: 6 }});
+                                selector.periods.unshift({ name: "3M", interval: { timeUnit: "month", count: 3 }});
+                                selector.periods.unshift({ name: "1M", interval: { timeUnit: "month", count: 1 }});
+                                selector.periods.unshift({ name: "2W", interval: { timeUnit: "week", count: 2 }});
+                            }
                         }
-                    };
+                    } ;
                 };
 
                 //NOTE oppositeAxis-Switches --------------------------------//
@@ -317,6 +352,9 @@
                 //valueAxis.renderer.line.strokeWidth = 2;
                 valueAxis.renderer.line.stroke = am4core.color(me.getProperty("axisYColor").fillColor);
                 valueAxis.renderer.line.strokeOpacity = me.getProperty("axisYColor").fillAlpha * 0.01;
+                valueAxis.tooltip.background.fill = am4core.color(me.getProperty("selectorColor").fillColor);
+                valueAxis.tooltip.background.strokeWidth = 0;
+                valueAxis.tooltip.label.fill = am4core.color(me.getProperty("selectorBackground").fillColor);
 
                 // Axis Metric Formatter
                 if (me.getProperty("metricFormat" + 0) !== undefined) {
@@ -344,13 +382,10 @@
                             // extract the index i from field = "value+i"
                             //var j = Number(field.substring(field.length - 1, field.length));
                     (me.getProperty("showDebugMsgs") == 'true') ? window.alert('104: createSeries index set: ' + index): 0;
-                    //get Metric Format
-                            //er = "[#0f0]#,###.00[/]";    //er = "[/bold]#,##[/]";    //er = "€ #,###.00";
-                            //window.alert('metricFormat+j: ' + me.getProperty("metricFormat" + j) + ' // j = ' + j);
 
-                    //if (me.getProperty("metricFormat" + index) !== undefined) {
                     if (me.getProperty("metricFormat" + index) !== undefined) {
-                        //er = me.getProperty("metricFormat" + index).replace(/'/g, "");
+                        //get Metric Format
+                        //er = "[#0f0]#,###.00[/]";    //er = "[/bold]#,##[/]";    //er = "€ #,###.00";
                         er = me.getProperty("metricFormat" + index).replace(/'/g, "");
                         valueYformat = "{valueY.formatNumber('" + er + "')}";
                     } else {
@@ -371,7 +406,6 @@
                         series.name = name;
                         series.dataFields.valueY = field;
                         series.dataFields.categoryX = "date";
-                        //FIXME
                         series.tooltipText = "{name}: " + valueYformat;
 
                         //show values inside chart
@@ -404,7 +438,6 @@
                         series.groupFields.valueY = me.getProperty("aggregateValues");
                         series.minBulletDistance = 15;
                         series.tooltipText = seriesToolTipFormat;
-                        //FIXME -- all variations -> with Non-Datetime
                         //insert metric form in Tooltip
                         var tipParts = seriesToolTipFormat.split('{valueY}');
                         seriesToolTipFormatted = tipParts[0] + valueYformat + tipParts[1]
@@ -574,12 +607,12 @@
                         allSeries.push(s);
                     })
                 // Break-By
-                //FIXME
-                //if (typeof datapool.transMetricNames != "undefined")
+                //if (typeof datapool.transMetricNames !== "undefined")
                 } else if (datapool.attrs.length > 1 && datapool.cols.length == 1) {
                     (me.getProperty("showDebugMsgs") == 'true') ? window.alert('109: break-by found'): 0;
                     datapool.transMetricNames.forEach((col, i) => {
                         var s = createSeries(col, col, 0); // 0 as index for breakby as there can only be one metric on breakby
+                        //var s = createSeries(values0, col, 0); // 0 as index for breakby as there can only be one metric on breakby
                         allSeries.push(s);
                     })
                 } else if (datapool.attrs.length > 1 && datapool.cols.length > 1) {
@@ -588,20 +621,47 @@
                 };
 
 
-                // And, for a good measure, let's add a legend and a cursor
+                // NOTE Legend and Cursor
                 if (me.getProperty("showLegend") === 'true') {
                     (me.getProperty("showDebugMsgs") == 'true') ? window.alert('111: showLegend is true!'): 0;
                     chart2.legend = new am4charts.Legend();
                     chart2.legend.position = me.getProperty("positionLegend");
+                    chart2.legend.margin(0, 5, 10, 5);
+                    //chart2.legend.padding(5,5,5,5);
                     chart2.legend.scrollable = true;
-                    chart2.legend.labels.template.fill = am4core.color(me.getProperty("fontColor").fillColor);
-                    chart2.legend.valueLabels.template.fill = am4core.color(me.getProperty("fontColor").fillColor);
+                    chart2.legend.labels.template.fill = am4core.color(me.getProperty("selectorColor").fillColor);
+                    // TODO Truncating labels
+                    //chart2.legend.labels.template.maxWidth = 150;
+                    //chart2.legend.labels.template.truncate = true;
+                    //chart2.legend.itemContainers.template.tooltipText = "{category}";
 
+                    chart2.legend.valueLabels.template.fill = am4core.color(me.getProperty("selectorColor").fillColor);
+                    // TODO select valueLabel position
+                    //chart2.legend.valueLabels.template.align = "left"; // left, right
+                    //chart2.legend.valueLabels.template.textAlign = "end"; // start, end
+
+                    /* TODO format legend
+                    let lblFontLegend = me.getProperty("labelFontLegend");
+                    chart2.legend.labels.template.fill = am4core.color(lblFontLegend.fontColor);
+                    chart2.legend.fontFamily = lblFontLegend.fontFamily;
+                    chart2.legend.fontSize = lblFontLegend.fontSize;
+                    //fontWeight = "normal" | "bold" | "bolder" | "lighter" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
+                    if (lblFontLegend.fontWeight == 'true') {
+                        chart2.legend.fontWeight = "bold";
+                    } else {
+                        chart2.legend.fontWeight = "normal";
+                    }
+                    */
+                    
                     if (me.getProperty("padLegend") === 'true') {
-                        chart2.legend.itemContainers.template.paddingTop = me.getProperty("padLegendAmount");
-                        chart2.legend.itemContainers.template.paddingBottom = me.getProperty("padLegendAmount");
-                        chart2.legend.itemContainers.template.paddingLeft = me.getProperty("padLegendAmount");
-                        chart2.legend.itemContainers.template.paddingRight = me.getProperty("padLegendAmount");
+                        let paddingAmount = me.getProperty("padLegendAmount")
+                        if (me.getProperty("positionLegend") === "top" || me.getProperty("positionLegend") === "bottom") {
+                            chart2.legend.itemContainers.template.paddingLeft = me.getProperty("padLegendAmount") / 2;
+                            chart2.legend.itemContainers.template.paddingRight = me.getProperty("padLegendAmount") / 2;
+                        } else {
+                            chart2.legend.itemContainers.template.paddingTop = me.getProperty("padLegendAmount") / 2;
+                            chart2.legend.itemContainers.template.paddingBottom = me.getProperty("padLegendAmount") / 2;
+                        }
                     };
 
                     if (me.getProperty("maxHeightLegend") === 'true') {
@@ -616,20 +676,52 @@
                     };
                     if (me.getProperty("valuesLegend") === "true") {
                         // show values in legend
-                        chart2.legend.labels.template.fill = am4core.color(me.getProperty("selectorColor").fillColor);
-                        chart2.legend.valueLabels.template.fill = am4core.color(me.getProperty("selectorColor").fillColor);
                         chart2.legend.background.fill = am4core.color(me.getProperty("selectorBackground").fillColor);
                         chart2.legend.align = "center";
-                    }
+                    };
                     if (me.getProperty("positionLegend") === "top" || me.getProperty("positionLegend") === "bottom") {
                         chart2.legend.width = am4core.percent(80);
                     }
+
+
+
+
+                    /* TODO show just one series: switch metrics
+                    // Problem: adjust Y-Axis to only shown series.
+                    // https://www.amcharts.com/docs/v4/tutorials/toggling-multiple-series-with-a-single-legend-item/
+                    //https://www.amcharts.com/docs/v4/tutorials/allow-just-single-series-to-be-displayed-at-a-time/
+                    chart2.legend.itemContainers.template.togglable = false;
+                    chart2.legend.itemContainers.template.events.on("hit", function (event) {
+                        var target = event.target;
+                        target.isActive = false;
+                        var currentSeries = target.dataItem.dataContext;
+                        chart2.series.each(function (series) {
+                            if (series != currentSeries) {
+                                series.hide()
+                            }
+                        })
+                        currentSeries.show();
+                    })
+                    */
+
+
+
+
+
+
+
+
+
+
                 };
                 if (me.getProperty("displayXYCursor") === 'true') {
                     chart2.cursor = new am4charts.XYCursor();
                     chart2.cursor.lineY.disabled = (me.getProperty("hideXYCursorLines") === 'true');
                     chart2.cursor.lineX.disabled = (me.getProperty("hideXYCursorLines") === 'true');
                     chart2.zoomOutButton.background.fill = am4core.color(me.getProperty("selectorBackground").fillColor);
+                    chart2.zoomOutButton.background.stroke = am4core.color(me.getProperty("selectorColor").fillColor);
+                    chart2.zoomOutButton.background.strokeWidth = 1;
+                    chart2.zoomOutButton.background.strokeOpacity = 1;
                     chart2.zoomOutButton.icon.stroke = am4core.color(me.getProperty("selectorColor").fillColor);
                     chart2.zoomOutButton.icon.strokeWidth = 2;
                     chart2.zoomOutButton.background.states.getKey("hover").properties.fill = am4core.color("#5A5F73");
@@ -655,6 +747,7 @@
 
                 // Create a horizontal scrollbar with preview and place it underneath the date axis
                 if (me.getProperty("displayXYChartScrollbar") === 'true') {
+
                     allSeries[0].show(); // hardcoded reference for series1
                     chart2.scrollbarX = new am4charts.XYChartScrollbar();
                     chart2.scrollbarX.minHeight = 40;
@@ -672,11 +765,11 @@
                     chart2.scrollbarX.unselectedOverlay.fill = am4core.color(me.getProperty("scrollbarUnselectedColor").fillColor);
                     chart2.scrollbarX.unselectedOverlay.fillOpacity = me.getProperty("scrollbarUnselectedColor").fillAlpha * 0.01;
 
-
                     chart2.scrollbarX.series.push(allSeries[0]);
                     chart2.scrollbarX.parent = chart2.bottomAxesContainer;
                     chart2.scrollbarX.scrollbarChart.series.getIndex(0).fillOpacity = 0.5;
-                    chart2.scrollbarX.scrollbarChart.series.getIndex(0).bullets.getIndex(0).disabled = true;
+                    // Bullets remove only for line not bar chart
+                    (AttrIsDate == 'true') ? chart2.scrollbarX.scrollbarChart.series.getIndex(0).bullets.getIndex(0).disabled = true : 0;                    
                     chart2.scrollbarX.scrollbarChart.plotContainer.filters.clear(); // remove desaturation
                     //chart2.scrollbarX.scrollbarChart.plotContainer.filters.DesaturateFilter.saturation = 0.5;
                     customizeGrip(chart2.scrollbarX.startGrip);
@@ -813,17 +906,9 @@
                         }
                     }
                 }
+
+
 // ! ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
 
                 // NOTE prepareData()
                 // https://www2.microstrategy.com/producthelp/2020/VisSDK/Content/topics/HTML5/DataInterfaceAPI.htm
@@ -860,7 +945,11 @@
                             AttrIsDate = "date";
                             AttrCount = 1;
                             break;
-                        //Datetime: if attribute has length(19) - digitcount(14) = 5 then we assume a datetime
+                        //Datetime: if attribute has length(19) - digitcount(14: mmddyyyyhhmmss) = 5 then we assume a datetime (3 date separator, space and 1 time)
+                        case 4:
+                            AttrIsDate = "datetime";
+                            AttrCount = 1;
+                            break;
                         case 5:
                             AttrIsDate = "datetime";
                             AttrCount = 1;
@@ -900,7 +989,7 @@
 
                         function createDateTime(conv2Date) {
                             //if (startAttrIsDate === "datetime") {
-                            //(i < 1) ? window.alert('conv2date b4: ' + conv2Date + '\nformat b4: ' + me.getProperty("dateTimeFormat")): 0;
+                            //(i < 1) ? window.alert('conv2date b4: ' + conv2Date + '\nformat b4: ' + me.getProperty("dateTimeFormat") + '\nAttrIsDate: ' + AttrIsDate): 0;
 
                             if (AttrIsDate === "false") {
                                 //(i < 1) ? window.alert('exit function'): 0;
@@ -1106,9 +1195,9 @@
                     //if (datapool.transMetricNames){
                     if (datapool.hasOwnProperty('transMetricNames')) {
                         //alert('jippie transmetric');
-                        var Say1 = 'DataPool: \n datapool.cols: ' + JSON.stringify(datapool.cols) + '\n datapool.attrs: ' + JSON.stringify(datapool.attrs) + '\n datapool.transMetricNames: ' + JSON.stringify(datapool.transMetricNames);
+                        var Say1 = 'DataPool: \n datapool.cols: ' + JSON.stringify(datapool.cols) + '\n datapool.attrs: ' + JSON.stringify(datapool.attrs) + '\n datapool.transMetricNames: ' + JSON.stringify(datapool.transMetricNames) + '\n AttrIsDate: ' + AttrIsDate;
                     } else {
-                        var Say1 = 'DataPool: \n datapool.cols: ' + JSON.stringify(datapool.cols) + '\n datapool.attrs: ' + JSON.stringify(datapool.attrs);
+                        var Say1 = 'DataPool: \n datapool.cols: ' + JSON.stringify(datapool.cols) + '\n datapool.attrs: ' + JSON.stringify(datapool.attrs) + '\n AttrIsDate: ' + AttrIsDate;
                     };
                     //var Say1 = 'DataPool: \n datapool.cols: ' + JSON.stringify(datapool.cols) + '\n datapool.attrs: ' + JSON.stringify(datapool.attrs); // + '\n datapool.transMetricNames: ' + JSON.stringify(datapool.transMetricNames);
                     var Say2 = "datapool.rows:";
