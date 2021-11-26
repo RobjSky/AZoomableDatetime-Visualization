@@ -34,8 +34,57 @@
                     {
                         name: 'amCharts Timeline Options',
                         value: [
-                            {
-                                style: $WT.EDITORGROUP,
+                            {   style: $WT.EDITORGROUP,
+                                items: [{
+                                    style: $WT.TWOCOLUMN,
+                                    items: [{
+                                        style: $WT.LABEL,
+                                        disabled: this.getHost().getProperty('displayXYCursor') === "false",
+                                        width: "40%",
+                                        labelText: "Wheel Scroll"
+                                    }, {
+                                        style: $WT.PULLDOWN,
+                                        disabled: this.getHost().getProperty('displayXYCursor') === "false",
+                                        width: "60%",
+                                        propertyName: "behaviorWheelScroll",
+                                        items: [{
+                                            name: "none",
+                                            value: "none"
+                                        }, {
+                                            name: "zoom",
+                                            value: "zoomX"
+                                        }, {
+                                            name: "pan",
+                                            value: "panX"
+                                        }]
+                                    }]
+                                    },{
+                                    style: $WT.TWOCOLUMN,
+                                    items: [{
+                                        style: $WT.LABEL,
+                                        width: "40%",
+                                        labelText: "Date Structure"
+                                    }, {
+                                        style: $WT.PULLDOWN,
+                                        width: "60%",
+                                        propertyName: "dateTimeFormat",
+                                        items: [{
+                                            name: "dd-mm-yyyy",
+                                            value: "dd-mm-yyyy"
+                                        }, {
+                                            name: "mm-dd-yyyy",
+                                            value: "mm-dd-yyyy"
+                                        }, {
+                                            name: "yyyy-dd-mm",
+                                            value: "yyyy-dd-mm"
+                                        }, {
+                                            name: "yyyy-mm-dd",
+                                            value: "yyyy-mm-dd"
+                                        }]
+                                    }]
+                                    },
+                            ]},
+                            {   style: $WT.EDITORGROUP,
                                 items: [{
                                         style: $WT.LABEL,
                                         labelText: "Legend:"
@@ -88,8 +137,7 @@
                                                 min: 0,
                                                 max: 1000,
                                                 width: "30%"
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         items: [{
@@ -105,8 +153,7 @@
                                                 min: 0,
                                                 max: 1000,
                                                 width: "25%"
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         items: [{
@@ -123,8 +170,7 @@
                                                 min: 0,
                                                 max: 1000,
                                                 width: "25%"
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         items: [{
@@ -140,8 +186,7 @@
                                                 min: 0,
                                                 max: 1000,
                                                 width: "30%"
-                                            }
-                                        ]
+                                            }]
                                      }, {
                                          style: $WT.CHECKBOXANDLABEL,
                                          disabled: this.getHost().getProperty('showLegend') === "false",
@@ -267,54 +312,7 @@
                                                         value: "max"
                                                     }]
                                             }]
-                                    }, {
-                                        style: $WT.TWOCOLUMN,
-                                        items: [{
-                                            style: $WT.LABEL,
-                                            disabled: this.getHost().getProperty('displayXYCursor') === "false",
-                                            width: "40%",
-                                            labelText: "Wheel Scroll"
-                                        }, {
-                                            style: $WT.PULLDOWN,
-                                            disabled: this.getHost().getProperty('displayXYCursor') === "false",
-                                            width: "60%",
-                                            propertyName: "behaviorWheelScroll",
-                                            items: [{
-                                                name: "none",
-                                                value: "none"
-                                            }, {
-                                                name: "zoom",
-                                                value: "zoomX"
-                                            }, {
-                                                name: "pan",
-                                                value: "panX"
-                                            }]
-                                        }]
-                                    }, {
-                                        style: $WT.TWOCOLUMN,
-                                        items: [{
-                                            style: $WT.LABEL,
-                                            width: "40%",
-                                            labelText: "DateTime Format (Separator doesnt matter)"
-                                        }, {
-                                            style: $WT.PULLDOWN,
-                                            width: "60%",
-                                            propertyName: "dateTimeFormat",
-                                            items: [{
-                                                name: "dd-mm-yyyy",
-                                                value: "dd-mm-yyyy"
-                                            }, {
-                                                name: "mm-dd-yyyy",
-                                                value: "mm-dd-yyyy"
-                                            }, {
-                                                name: "yyyy-dd-mm",
-                                                value: "yyyy-dd-mm"
-                                            }, {
-                                                name: "yyyy-mm-dd",
-                                                value: "yyyy-mm-dd"
-                                            }]
-                                        }]
-                                    }
+                                    }, 
                                 ]},
                                     //Show Item Labels
                                     {
@@ -350,8 +348,7 @@
                                                             name: "none",
                                                             value: "none"
                                                         }]
-                                                    }
-                                                ]
+                                                    }]
                                             }, {
                                                 style: $WT.TWOCOLUMN,
                                                 disabled: this.getHost().getProperty('showItemLabels') === "false",
@@ -378,10 +375,8 @@
                                                             name: "none",
                                                             value: "none"
                                                         }]
-                                                    }
-                                                ]
-                                            }
-                                ]
+                                                    }]
+                                            }]
                             },
                             
                             //Weekendhighlights
@@ -403,10 +398,8 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "weekendFillColor",
-                                            }
-                                        ]
-                                    },
-                                ]
+                                            }]
+                                    }]
                             },
                             // minGridDistance
                             {
@@ -422,8 +415,7 @@
                                         max: 100,
                                         width: "100%"
                                     }]
-                            },
-                        ]
+                            }]
                     },
                     // NOTE Tab amCharts Timeline Format
                     {
@@ -452,8 +444,7 @@
                                                     min: 0,
                                                     max: 10,
                                                     width: "30%"
-                                                }
-                                            ]
+                                                }]
                                 }]
                             },
                             //Fonts and Colors
@@ -476,8 +467,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "amountStrokeXColor",
-                                            }
-                                        ]
+                                            }]
                                     },
                                     {
                                         style: $WT.TWOCOLUMN,
@@ -490,8 +480,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "amountStrokeYColor",
-                                            }
-                                        ]
+                                            }]
                                     },
                                     //Axis Lines
                                     {
@@ -505,8 +494,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "axisXColor",
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         items: [{
@@ -518,8 +506,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "axisYColor",
-                                            }
-                                        ]
+                                            }]
                                     },
                                     //Axis Font
                                     {
@@ -533,8 +520,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "fontColor",
-                                            }
-                                        ]
+                                            }]
                                     },
                                     //Label Font
                                     {
@@ -548,8 +534,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "labelColor",
-                                            }
-                                        ]
+                                            }]
                                     },
                                     //Selector Font and Background
                                     {
@@ -563,8 +548,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "selectorColor",
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         items: [{
@@ -576,8 +560,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "selectorBackground",
-                                            }
-                                        ]
+                                            }]
                                     },
                                     // Scrollbar Font and Background
                                     {
@@ -592,8 +575,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "scrollbarBackgroundColor",
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         disabled: this.getHost().getProperty('displayXYChartScrollbar') === "false",
@@ -606,8 +588,7 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "scrollbarThumbColor",
-                                            }
-                                        ]
+                                            }]
                                     }, {
                                         style: $WT.TWOCOLUMN,
                                         disabled: this.getHost().getProperty('displayXYChartScrollbar') === "false",
@@ -620,41 +601,9 @@
                                                 style: $WT.FILLGROUP,
                                                 width: "70%",
                                                 propertyName: "scrollbarUnselectedColor",
-                                            }
-                                        ]
-                                    }, 
-
-                                    /**
-                                     * 
-                                     * 
-                                     * 
-                                     * 
-                                     * 
-                                     */
-
-
-                                ]
+                                            }]
+                                    }]
                             },
-                            /*
-                            //axis lables
-                            {
-                                style: $WT.EDITORGROUP,
-                                items: []
-                            },
-                            //Selector Format
-                            {
-                                style: $WT.EDITORGROUP,
-                                items: [
-                                ]
-                            },
-
-                            //Scrollbar Format
-                            {
-                                style: $WT.EDITORGROUP,
-                                items: [
-                                ]
-                            },
-                            */
                             // Options Group
                             {
                                 style: $WT.EDITORGROUP,
@@ -667,10 +616,8 @@
                                         disabled: this.getHost().getProperty('displayXYCursor') === "false",
                                         propertyName: "placeholder",
                                         labelText: "Place Holder"
-                                    }
-                                ]
-                            },
-                        ]
+                                    }]
+                            }]
                     },
                     // NOTE Tab Metric Options
                     {
@@ -765,10 +712,10 @@
                         {
                             style: $WT.EDITORGROUP,
                             items: [
-                                {
+                           /*   {
                                     style: $WT.LABEL,
-                                    labelText: "Version 1.45 (GitHub:RobjSky)"
-                                }, {
+                                    labelText: "Version 1.54 (GitHub:RobjSky)"
+                                }, */{
                                     style: $WT.CHECKBOXANDLABEL,
                                     propertyName: "showDebugMsgs",
                                     labelText: "Show Debug Msg"
@@ -778,9 +725,16 @@
                                     labelText: "Show Debug Table"
                                 }, {
                                     style: $WT.LABEL,
-                                    labelText: "Things to look out for: Date(dd.MM.yyyy) and DateTime(dd.MM.yyyy HH:mm) // The Time Attribute for DateTime needs to be sorted ASC."
-                                    +"/n AMCharts(Aug2021):"
-                                    +"\n Horizontal scrolling of legends is not(yet) supported."
+                                    labelText: "Help:"
+                                }, {
+                                    style: $WT.LABEL,
+                                    labelText: "Date Function: This function assumes input to be of the date- or datetime-format! Date and DateTime need to be in one of the supported formats. Supported separators for date are: , - . / \ : and [Whitespace]"
+                                }, {
+                                    style: $WT.LABEL,
+                                    labelText: "Sorting by DateTime Attribute is very important."
+                                }, {
+                                    style: $WT.LABEL,
+                                    labelText: "AMCharts(Aug2021): Horizontal scrolling of legends is not(yet) supported."
                                 },
                             ]
                         },]

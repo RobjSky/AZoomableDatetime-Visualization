@@ -103,7 +103,7 @@
                     */
                 });
                 ;
-                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('Version 1.07') : 0;
+                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('100: Version 1.54') : 0;
 
                 am4core.useTheme(am4themes_animated);
 
@@ -156,7 +156,7 @@
                 //NOTE Create Axis --------------------------------//
                 // category-based X-Axis:
                 if (AttrIsDate == 'false') {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('category-based AttrIsDate = ' + AttrIsDate): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('101: category-based AttrIsDate = ' + AttrIsDate): 0;
                     var categoryAxis = chart2.xAxes.push(new am4charts.CategoryAxis());
                     categoryAxis.cursorTooltipEnabled = (me.getProperty("displayXYCursorTips") === 'true'); //convert string (returned from getProperty) to boolean
                     categoryAxis.renderer.grid.template.stroke = am4core.color(me.getProperty("amountStrokeXColor").fillColor);
@@ -172,7 +172,7 @@
                     label.fill = am4core.color(me.getProperty("fontColor").fillColor);
                 // date-based X-Axis:
                 } else {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('date-based AttrIsDate = ' + AttrIsDate): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('102: date-based AttrIsDate = ' + AttrIsDate): 0;
                     var dateAxis = chart2.xAxes.push(new am4charts.DateAxis());
                     dateAxis.renderer.minGridDistance = me.getProperty("minGridDist");
                     dateAxis.cursorTooltipEnabled = (me.getProperty("displayXYCursorTips") === 'true'); //convert string (returned from getProperty) to boolen
@@ -393,7 +393,7 @@
                     }
 
                     if (AttrIsDate == 'false') {
-                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('category-based AttrIsDate = ' + AttrIsDate): 0;
+                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('105a: category-based AttrIsDate = ' + AttrIsDate): 0;
                         // None-Date-Block (to be executed if attribute is no date and therefore series must be created for values of attribute(Country: Italy, Germany, Spain))
                         categoryAxis.dataFields.category = "date";
                         categoryAxis.renderer.grid.template.location = 0 ;
@@ -430,7 +430,7 @@
                         };
                     } else {
                         // Date-Block
-                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('createSeries Date-Block AttrIsDate: ' + AttrIsDate): 0;
+                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('105b: createSeries Date-Block AttrIsDate: ' + AttrIsDate): 0;
                         series = chart2.series.push(new am4charts.LineSeries());
                         series.name = name;
                         series.dataFields.valueY = field;
@@ -447,7 +447,6 @@
                         bullet.circle.stroke = am4core.color("#fff");
                         bullet.circle.strokeWidth = 1;
                         bullet.circle.radius = 3;
-                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('101/l.339'): 0;
                     }
 
                     //NOTE createSeries: Values in Legend --------------------------------//
@@ -466,14 +465,12 @@
                     }
 
                     series.strokeWidth = 2;
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('102'): 0;
                     if (me.getProperty("displayFill") === 'true') {
                         series.fillOpacity = me.getProperty("amountFillOpacity")/10;
                     }
                     if (hiddenInLegend) {
                         series.hiddenInLegend = true;
                     }
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('103: non'): 0;
 
                     //NOTE createSeries: combined Tooltip --------------------------------//
                     if (me.getProperty("combineTooltip") === 'true' && me.getProperty("singleTooltip") === 'true') {
@@ -500,7 +497,7 @@
                     //NOTE createSeries: Opposite Axis --------------------------------//
                     // check whether oppositeA has a true at that index, if so create opposite Axis
                     if (oppositeA[index] == 'true') {
-                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('105 Start oppositeA[index] == true'): 0;
+                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('107 Start oppositeA[index] == true'): 0;
                         // Create new ValueAxis
                         var valueAxis2 = chart2.yAxes.push(new am4charts.ValueAxis());
                         valueAxis2.syncWithAxis = valueAxis;
@@ -587,21 +584,21 @@
                         }
                         */
                        }
-                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('105: While oppositeA[index] == true'): 0;
+                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('108: While oppositeA[index] == true'): 0;
                     };
 
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('106: After oppositeA[index] == true'): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('109: After oppositeA[index] == true'): 0;
                     return series;
                     
                 };
-                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('107: After function createSeries'): 0;
+                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('110: After function createSeries'): 0;
 
                 let allSeries = [];
 
                 //NOTE Call Series --------------------------------//
                 // no Break-By
                 if (datapool.attrs.length == 1) {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('108: no break-by'): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('111: no break-by'): 0;
                     datapool.cols.forEach((col, i) => {
                         var s = createSeries("values" + i, col, i);
                         allSeries.push(s);
@@ -609,21 +606,21 @@
                 // Break-By
                 //if (typeof datapool.transMetricNames !== "undefined")
                 } else if (datapool.attrs.length > 1 && datapool.cols.length == 1) {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('109: break-by found'): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('112: break-by found'): 0;
                     datapool.transMetricNames.forEach((col, i) => {
                         var s = createSeries(col, col, 0); // 0 as index for breakby as there can only be one metric on breakby
                         //var s = createSeries(values0, col, 0); // 0 as index for breakby as there can only be one metric on breakby
                         allSeries.push(s);
                     })
                 } else if (datapool.attrs.length > 1 && datapool.cols.length > 1) {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('110: break-by found with too many metrics!'): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('113: break-by found with too many metrics!'): 0;
                     window.alert(datapool.attrs.length + ' Attributes and ' + datapool.cols.length + ' Metrics is too much for this Visualization to handle. Valid Combinations: \n1 (Time)Attribute and 1 or more Metrics OR 2 (Time)Attributes and 1 Metric')
                 };
 
 
                 // NOTE Legend and Cursor
                 if (me.getProperty("showLegend") === 'true') {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('111: showLegend is true!'): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('114: showLegend is true!'): 0;
                     chart2.legend = new am4charts.Legend();
                     chart2.legend.position = me.getProperty("positionLegend");
                     chart2.legend.margin(0, 5, 10, 5);
@@ -775,12 +772,11 @@
                     customizeGrip(chart2.scrollbarX.startGrip);
                     customizeGrip(chart2.scrollbarX.endGrip);
                 }
-                (me.getProperty("showDebugMsgs") == 'true') ? window.alert('110'): 0;
 
                 //NOTE customizeGrip() --------------------------------//
                 // Style scrollbar
                 function customizeGrip(grip) {
-                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('111'): 0;
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('115 customizeGrip(grip)'): 0;
                     // Remove default grip image
                     grip.icon.disabled = true;
 
@@ -810,6 +806,7 @@
 // ! NOTE: Visualisation as Selector
 // https://www.amcharts.com/docs/v4/tutorials/handling-axis-zoom-events-via-api/
                 if (me.getProperty("vizAsSelect") === 'true') {
+                    (me.getProperty("showDebugMsgs") == 'true') ? window.alert('116 Visualisation as Selector'): 0;
                     // ! Visualisation as Selector
                     this.addUseAsFilterMenuItem();
 
@@ -823,6 +820,7 @@
 
                     // Date and DateTime-Axis as Selector:
                     if (!(AttrIsDate === 'false')) {
+                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('117 Date and DateTime-Axis as Selector'): 0;
                         //dateAxis.events.on("selectionextremeschanged", dateAxisChanged); //Not fancy having two events? If you are using ValueAxis or DateAxis you can use a unified "selectionextremeschanged" event instead.
                         dateAxis.events.on("startendchanged", dateAxisChanged); //invokes too many times till final zoom state
                         //chart2.cursor.events.on('zoomended', dateAxisChanged); //works only for zoom not for panning
@@ -868,6 +866,7 @@
                         }
                     // Catgory-Axis as Selector:
                     } else if (AttrIsDate === 'false'){
+                        (me.getProperty("showDebugMsgs") == 'true') ? window.alert('118 Catgory-Axis as Selector'): 0;
                         //window.alert('looks like Category');
                         categoryAxis.events.on("startendchanged", categoryAxisZoomed); //invokes too many times till final zoom state
 
