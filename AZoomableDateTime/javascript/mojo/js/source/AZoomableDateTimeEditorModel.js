@@ -280,6 +280,10 @@
                                         labelText: "stacked Series"
                                     }, {
                                         style: $WT.CHECKBOXANDLABEL,
+                                        propertyName: "enableToggle",
+                                        labelText: "toggle Series"
+                                    }, {
+                                        style: $WT.CHECKBOXANDLABEL,
                                         propertyName: "enableDataGrouping",
                                         labelText: "Enable Data Grouping"
                                     }, {

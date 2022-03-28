@@ -38,7 +38,6 @@
             // Define whether the DOM should be reused on data/layout change or reconstructed from scratch
             reuseDOMNode: false,
 
-
             plot: function () {
                 var me = this;
                 var domNode = this.domNode,
@@ -48,9 +47,6 @@
                 var seriesToolTipFormat = "{dateX.formatDate('dd.MM.yyyy')}:\n {name}:\n [bold]{valueY}[/]";
                 var oppositeValueAxisFlag;
                 var diff;
-
-
-                
 
                 this.setDefaultPropertyValues({
                     showLegend: 'true', //show legend
@@ -66,6 +62,7 @@
                     hideYAxisLabels: 'false',
                     startAtZero: 'false',
                     enableStacked: 'false',
+                    enableToggle: 'false',
                     VizAsSelect: 'false',
                     padLegendAmount: 10,
                     
@@ -121,7 +118,6 @@
                 // Add data
                 var datapool = prepareData();
 
-
                 // Set Default Colors
                 chart2.colors.list = [
                     am4core.color("#eac566"),
@@ -134,7 +130,6 @@
                     am4core.color("#99bbcc"),
                     am4core.color("#65a688")
                 ];
-
 
                 // Change Color if different Color-Property is set by user, Colors are set by Index not by Name
                 datapool.cols.forEach((col, i) => {
@@ -449,10 +444,130 @@
                         bullet.circle.radius = 3;
                     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    // Legend as radio buttons
+                    // Create own Axis for toggle axis and disable global axis
+                    // https://www.amcharts.com/docs/v4/tutorials/auto-hide-value-axes/
+                    // https://www.amcharts.com/docs/v4/tutorials/allow-just-single-series-to-be-displayed-at-a-time/
+                    // CodePen Home amCharts 4: Inversed legend behavior
+                    // https://codepen.io/team/amcharts/pen/bGERoWo?editors=0010
+                    // amCharts 4: Auto-hide value axis when related series is hidden
+                    // https://codepen.io/team/amcharts/pen/KLYrww?editors=0010
+                    if (me.getProperty("enableToggle") === "true") {
+                        //window.alert('set toggle')
+                        //disable global YAxis
+                        valueAxis.disabled = true;
+                        // Hide but first series
+                        if (!index == 0) {
+                            series.hidden = true;                            
+                        }
+
+                        //var valueAxis2 = chart2.yAxes.push(new am4charts.ValueAxis());
+                        //window['valueAxisDistinct' + index] = chart2.yAxes.push(new am4charts.ValueAxis());
+                        this['valueAxisDistinct' + index] = chart2.yAxes.push(new am4charts.ValueAxis());
+                        valueAxis2 = this['valueAxisDistinct' + index];
+
+                        valueAxis2.syncWithAxis = valueAxis;
+                        valueAxis2.title.text = series.name + index;
+                        //valueAxis2.name = series.name;
+                        //valueAxis2.renderer.opposite = false;
+                        valueAxis2.renderer.grid.template.stroke = am4core.color(me.getProperty("amountStrokeYColor").fillColor);
+                        valueAxis2.renderer.grid.template.strokeOpacity = 0;
+                        valueAxis2.renderer.labels.template.fill = am4core.color(me.getProperty("fontColor").fillColor);
+                        //valueAxis2.renderer.line.strokeWidth = 2;
+                        valueAxis2.renderer.line.stroke = am4core.color(me.getProperty("axisYColor").fillColor);
+                        valueAxis2.renderer.line.strokeOpacity = me.getProperty("axisYColor").fillAlpha * 0.01;
+                        valueAxis2.tooltip.background.fill = am4core.color(me.getProperty("selectorColor").fillColor);
+                        valueAxis2.tooltip.background.strokeWidth = 0;
+                        valueAxis2.tooltip.label.fill = am4core.color(me.getProperty("selectorBackground").fillColor);
+
+                        // FIXME own Axis labels not working properly. most likely because this code is not binded to a metric but rather gets "random" assigned.
+                        // Axis Metric Formatter
+                        if (me.getProperty("metricFormat" + index) !== undefined) {
+                            valueAxis2.numberFormatter = new am4core.NumberFormatter();
+                            valueAxis2.numberFormatter.numberFormat = me.getProperty("metricFormat" + index);
+                        }
+                        // Start Value Axis always at Zero
+                        if (me.getProperty("startAtZero") === 'true') {
+                            valueAxis2.min = 0;
+                            valueAxis2.strictMinMax = true;
+                        }
+                        if (me.getProperty("hideYAxisLabels") === 'true') {
+                            valueAxis2.renderer.labels.template.disabled = true;
+                            valueAxis2.cursorTooltipEnabled = false;
+                        } else {
+                            valueAxis2.renderer.labels.template.disabled = false;
+                            valueAxis2.cursorTooltipEnabled = (me.getProperty("displayXYCursorTips") === 'true');
+                        }
+
+                        series.events.on("hidden", toggleAxes);
+                        series.events.on("shown", toggleAxes);
+                        //window.alert('index: ' + index);
+                        
+                        // assign axis to current series
+                        series.yAxis = valueAxis2;
+                    };
+
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     //NOTE createSeries: Values in Legend --------------------------------//
                     if (me.getProperty("valuesLegend") === "true") {
-                        // show values in legend
-                        //window.alert('metricFormat+index: ' + me.getProperty("metricFormat" + index) + ' // index = ' + index);
+                        // show values in legend //window.alert('metricFormat+index: ' + me.getProperty("metricFormat" + index) + ' // index = ' + index);
                         series.legendSettings.itemValueText = "[bold]" + valueYformat + "[/bold]";
                         series.tooltip.disabled = true;
                     }
@@ -609,7 +724,6 @@
                     (me.getProperty("showDebugMsgs") == 'true') ? window.alert('112: break-by found'): 0;
                     datapool.transMetricNames.forEach((col, i) => {
                         var s = createSeries(col, col, 0); // 0 as index for breakby as there can only be one metric on breakby
-                        //var s = createSeries(values0, col, 0); // 0 as index for breakby as there can only be one metric on breakby
                         allSeries.push(s);
                     })
                 } else if (datapool.attrs.length > 1 && datapool.cols.length > 1) {
@@ -683,34 +797,133 @@
 
 
 
-                    /* TODO show just one series: switch metrics
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    // Legend as radio buttons
+                    // TODO show just one series: switch metrics
                     // Problem: adjust Y-Axis to only shown series.
                     // https://www.amcharts.com/docs/v4/tutorials/toggling-multiple-series-with-a-single-legend-item/
                     //https://www.amcharts.com/docs/v4/tutorials/allow-just-single-series-to-be-displayed-at-a-time/
-                    chart2.legend.itemContainers.template.togglable = false;
-                    chart2.legend.itemContainers.template.events.on("hit", function (event) {
-                        var target = event.target;
-                        target.isActive = false;
-                        var currentSeries = target.dataItem.dataContext;
-                        chart2.series.each(function (series) {
-                            if (series != currentSeries) {
-                                series.hide()
-                            }
+                    if (me.getProperty("enableToggle") === "true") {
+                        // FIXME not working as Y-Axis is not updated properly
+                        // Loop through all Metrics:
+                        // datapool.cols.forEach((col, i) => {
+                        //     /* here we need to create separate axis for each metric*/
+                        // });
+                        // create Second value axis
+                        // var valueAxis2 = chart.yAxes.push(new am4charts.ValueAxis());
+                        // valueAxis2.title.text = "Units sold";
+                        // Hide valueAxis:
+                        // valueAxis2.disabled = false;
+                        // Assign Series to valueAxis:
+                        // series2.yAxis = valueAxis2;
+                        chart2.legend.itemContainers.template.togglable = false;
+
+                        chart2.legend.itemContainers.template.events.on("hit", function (event) {
+                            var target = event.target;
+                            target.isActive = false;
+                            var currentSeries = target.dataItem.dataContext;
+                            chart2.series.each(function (series) {
+                                if (series != currentSeries) {
+                                    series.hide();
+                                    //valueAxis2[series.name].disabled = true;
+                                }
+                            })
+                            currentSeries.show();
                         })
-                        currentSeries.show();
-                    })
-                    */
-
-
-
-
-
-
-
-
-
-
+                    };
                 };
+                function toggleAxes(ev) {
+                    var axis = ev.target.yAxis;
+                    var disabled = true;
+                    axis.series.each(function (series) {
+                        if (!series.isHiding && !series.isHidden) {
+                            disabled = false;
+                        }
+                    });
+                    axis.disabled = disabled;
+                    //axis.hidden = false;
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+chart2.yAxes.each((axis) => {
+    axis.dataItems.each((dataItem) => {
+        dataItem.value = null;
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 if (me.getProperty("displayXYCursor") === 'true') {
                     chart2.cursor = new am4charts.XYCursor();
                     chart2.cursor.lineY.disabled = (me.getProperty("hideXYCursorLines") === 'true');
