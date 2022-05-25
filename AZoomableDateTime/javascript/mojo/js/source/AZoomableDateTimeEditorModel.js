@@ -83,6 +83,12 @@
                                         }]
                                     }]
                                     },
+                                    // switch to german
+                                    {
+                                        style: $WT.CHECKBOXANDLABEL,
+                                        propertyName: "formatGerman",
+                                        labelText: "german Date/Numbers"
+                                    }
                             ]},
                             {   style: $WT.EDITORGROUP,
                                 items: [{
@@ -221,7 +227,7 @@
                                     }, {
                                         style: $WT.CHECKBOXANDLABEL,
                                         disabled: this.getHost().getProperty('displayXYCursor') === "false",
-                                        propertyName: "displayXYCursorTips",
+                                        propertyName: "showAxisTooltip",
                                         labelText: "Show Axis Tooltip"
                                     }, {
                                         style: $WT.TWOCOLUMN,
@@ -231,7 +237,7 @@
                                                     labelText: "format:"
                                                 }, {
                                                     style: $WT.TEXTBOX,
-                                                    disabled: this.getHost().getProperty('displayXYCursor') === "false",
+                                                    disabled: this.getHost().getProperty('displayXYCursor') === "false" || this.getHost().getProperty('showAxisTooltip') === "false",
                                                     width: "70%",
                                                     propertyName: "AxisTooltipFormat"
                                                 }]
@@ -628,6 +634,14 @@
                         name: 'Metric Options',
                         value: [
                             //Metric Colors and Axis (Colors of Metrics and switch for opposite Axis)
+                             {
+                                 style: $WT.EDITORGROUP,
+                                 items: [{
+                                             style: $WT.CHECKBOXANDLABEL,
+                                             propertyName: "useCubeFormat",
+                                             labelText: "use Cube Format",
+                                         }]
+                            },
                             {
                                 style: $WT.EDITORGROUP,
                                 items: (function () {
@@ -716,10 +730,10 @@
                         {
                             style: $WT.EDITORGROUP,
                             items: [
-                           /*   {
+                              {
                                     style: $WT.LABEL,
                                     labelText: "Version 1.54 (GitHub:RobjSky)"
-                                }, */{
+                                }, {
                                     style: $WT.CHECKBOXANDLABEL,
                                     propertyName: "showDebugMsgs",
                                     labelText: "Show Debug Msg"
